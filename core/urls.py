@@ -1,6 +1,11 @@
-from django.urls import path #type: ignore
-from .views import home
+from django.urls import path
+from .views import home, upload, lista_clientes, detalhe_cliente
 
 urlpatterns = [
-    path('', home, name='home'),
+    path("", home, name="home"),
+    path("upload/", upload, name="upload"),
+
+    path("api/clientes/", lista_clientes, name="lista_clientes"),
+    path("api/clientes/<int:id>/", detalhe_cliente, name="detalhe_cliente"),
 ]
+

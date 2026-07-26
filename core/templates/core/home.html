@@ -1,22 +1,13 @@
-{% load static %}
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistema de Processamento de Dados</title>
+{% extends 'core/base.html' %}
 
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
-</head>
-<body>
+{% block title %}
+Home
+{% endblock %}
 
-    <h1>Sistema de Processamento de Dados</h1>
+{% block content %}
 
-    <hr>
+<h2>Sistema de Processamento de Dados</h2>
 
-    <h2>Projeto Django</h2>
+<p>Bem-vindo ao sistema.</p>
 
-    <p>Este projeto será desenvolvido para demonstrar conhecimentos em Python, Django, APIs e Banco de Dados.</p>
-
-</body>
-</html>
+{% endblock %}

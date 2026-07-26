@@ -1,0 +1,27 @@
+{% extends 'core/base.html' %}
+
+{% block title %}
+Upload
+{% endblock %}
+
+{% block content %}
+
+{% if messages %}
+    {% for message in messages %}
+        <p>{{ message }}</p>
+    {% endfor %}
+{% endif %}
+
+<h2>Upload de Arquivos</h2>
+
+<p>Selecione um arquivo para enviar.</p>
+
+<form method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+
+    <input type="file" name="arquivo">
+
+    <button type="submit">Enviar</button>
+</form>
+
+{% endblock %}
