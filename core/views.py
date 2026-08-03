@@ -9,6 +9,9 @@ from .models import Arquivo, Cliente, Importacao
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from .serializers import ClienteSerializer
+from .services.importacao_service import importar_csv
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.decorators import permission_classes
 
 def home(request):
     return render(request, "core/home.html")
@@ -28,72 +31,27 @@ def upload(request):
             messages.error(request, "Envie apenas arquivos CSV.")
             return redirect("upload")
 
-        if arquivo:
-            fs = FileSystemStorage()
-            nome = fs.save(arquivo.name, arquivo)
-            caminho = fs.path(nome)
+        fs = FileSystemStorage()
+        nome = fs.save(arquivo.name, arquivo)
+        caminho = fs.path(nome)
 
-            with open(caminho, newline="", encoding="utf-8") as csvfile:
-                leitor = csv.reader(csvfile)
+        resultado = importar_csv(caminho)
 
-                next(leitor)
-                
-                importados=0
-                ignorados = 0
-                
-                for linha in leitor:
-                    
-                    if not linha[0].strip() or not linha[1].strip():
-                        ignorados += 1
-                        print(f"Linha ignorada: campos obrigatórios vazios -> {linha}")
-                        continue
-                    
-                    if len(linha) != 3:
-                        ignorados += 1
-                        continue
+        importados = resultado["importados"]
 
-                    try:
-                        idade = int(linha[2])
+        Arquivo.objects.create(nome=nome)
 
-                        cliente, criado = Cliente.objects.get_or_create(
-                            email=linha[1],
-                            defaults={
-                                "nome": linha[0],
-                                "idade": idade,
-                            }
-                        )
+        messages.success(
+            request,
+            f"Importação concluída! {importados} cliente(s) importado(s)."
+        )
 
-                        if criado:
-                            importados += 1
-                        
-                        print(f"Cliente importado: {linha[0]}")
-
-                    except ValueError:
-                        ignorados += 1
-                        print(f"Idade inválida: {linha}")
-
-                    print(linha)
-
-            Arquivo.objects.create(nome=nome)
-
-            print(f"Arquivo salvo: {nome}")
-            
-            Importacao.objects.create(
-                arquivo=nome,
-                importados=importados,
-                ignorados=ignorados,
-            )
-
-            messages.success(
-                request,
-                f"Importação concluída! {importados} cliente(s) importado(s)."
-            )
-
-            return redirect("upload")
+        return redirect("upload")
 
     return render(request, "core/upload.html")
 
 @api_view(["GET", "POST"])
+@permission_classes([IsAuthenticated])
 def lista_clientes(request):
 
     if request.method == "GET":
@@ -118,6 +76,7 @@ def lista_clientes(request):
 
 
 @api_view(["GET", "PUT", "DELETE"])
+@permission_classes([IsAuthenticated])
 def detalhe_cliente(request, id):
 
     try:
