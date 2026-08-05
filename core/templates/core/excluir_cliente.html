@@ -1,0 +1,47 @@
+{% extends "core/base.html" %}
+
+{% block title %}
+Excluir Cliente
+{% endblock %}
+
+{% block content %}
+
+<h2 class="mb-4 text-danger">
+    Excluir Cliente
+</h2>
+
+<div class="card shadow-sm">
+
+    <div class="card-body">
+
+        <p>
+
+            Tem certeza que deseja excluir o cliente:
+
+            <strong>{{ cliente.nome }}</strong>?
+
+        </p>
+
+        <form method="POST">
+
+            {% csrf_token %}
+
+            <button class="btn btn-danger">
+
+                Sim, excluir
+
+            </button>
+
+            <a href="{% url 'clientes' %}" class="btn btn-secondary">
+
+                Cancelar
+
+            </a>
+
+        </form>
+
+    </div>
+
+</div>
+
+{% endblock %}

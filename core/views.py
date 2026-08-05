@@ -13,8 +13,33 @@ from .services.importacao_service import importar_csv
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import permission_classes
 
+from .models import Cliente, Importacao
+from django.core.paginator import Paginator
+
 def home(request):
-    return render(request, "core/home.html")
+
+    total_clientes = Cliente.objects.count()
+    total_importacoes = Importacao.objects.count()
+    ultimas_importacoes = Importacao.objects.order_by("-data")[:5]
+    ultima_importacao = Importacao.objects.order_by("-data").first()
+    
+    grafico_labels = []
+    grafico_dados = []
+
+    for item in ultimas_importacoes:
+        grafico_labels.append(item.arquivo)
+        grafico_dados.append(item.importados)
+
+    context = {
+        "total_clientes": total_clientes,
+        "total_importacoes": total_importacoes,
+        "ultimas_importacoes": ultimas_importacoes,
+        "grafico_labels": grafico_labels,
+        "grafico_dados": grafico_dados,
+        "ultima_importacao": ultima_importacao,
+    }
+
+    return render(request, "core/home.html", context)
 
 
 def upload(request):
@@ -105,3 +130,78 @@ def detalhe_cliente(request, id):
         cliente.delete()
 
         return Response(status=204)
+
+def clientes(request):
+
+    nome = request.GET.get("nome")
+
+    if nome:
+        clientes = Cliente.objects.filter(nome__icontains=nome)
+    else:
+        clientes = Cliente.objects.all().order_by("nome")
+
+    paginator = Paginator(clientes, 10)
+
+    page_number = request.GET.get("page")
+
+    clientes = paginator.get_page(page_number)
+
+    return render(
+        request,
+        "core/clientes.html",
+        {"clientes": clientes}
+    )
+
+def novo_cliente(request):
+
+    if request.method == "POST":
+
+        Cliente.objects.create(
+            nome=request.POST["nome"],
+            email=request.POST["email"],
+            idade=request.POST["idade"],
+        )
+
+        return redirect("clientes")
+
+    return render(request, "core/novo_cliente.html")    
+
+def editar_cliente(request, id):
+
+    cliente = Cliente.objects.get(id=id)
+
+    if request.method == "POST":
+
+        cliente.nome = request.POST["nome"]
+        cliente.email = request.POST["email"]
+        cliente.idade = request.POST["idade"]
+
+        cliente.save()
+
+        messages.success(request, "Cliente atualizado com sucesso!")
+
+        return redirect("clientes")
+
+    return render(
+        request,
+        "core/editar_cliente.html",
+        {"cliente": cliente}
+    )
+    
+def excluir_cliente(request, id):
+
+    cliente = Cliente.objects.get(id=id)
+
+    if request.method == "POST":
+
+        cliente.delete()
+
+        messages.success(request, "Cliente excluído com sucesso!")
+
+        return redirect("clientes")
+
+    return render(
+        request,
+        "core/excluir_cliente.html",
+        {"cliente": cliente}
+    )

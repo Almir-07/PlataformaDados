@@ -1,0 +1,65 @@
+{% extends "core/base.html" %}
+
+{% block title %}
+Editar Cliente
+{% endblock %}
+
+{% block content %}
+
+<h2 class="mb-4">
+    Editar Cliente
+</h2>
+
+<div class="card shadow-sm">
+
+    <div class="card-body">
+
+        <form method="POST">
+
+            {% csrf_token %}
+
+            <div class="mb-3">
+                <label class="form-label">Nome</label>
+                <input
+                    type="text"
+                    name="nome"
+                    class="form-control"
+                    value="{{ cliente.nome }}"
+                    required>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Email</label>
+                <input
+                    type="email"
+                    name="email"
+                    class="form-control"
+                    value="{{ cliente.email }}"
+                    required>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Idade</label>
+                <input
+                    type="number"
+                    name="idade"
+                    class="form-control"
+                    value="{{ cliente.idade }}"
+                    required>
+            </div>
+
+            <button class="btn btn-success">
+                Salvar Alterações
+            </button>
+
+            <a href="{% url 'clientes' %}" class="btn btn-secondary">
+                Cancelar
+            </a>
+
+        </form>
+
+    </div>
+
+</div>
+
+{% endblock %}

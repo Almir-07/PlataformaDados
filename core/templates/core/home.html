@@ -1,13 +1,194 @@
-{% extends 'core/base.html' %}
+{% extends "core/base.html" %}
 
 {% block title %}
-Home
+Dashboard
 {% endblock %}
 
 {% block content %}
 
-<h2>Sistema de Processamento de Dados</h2>
+<h2 class="mb-4">
+    Dashboard
+</h2>
 
-<p>Bem-vindo ao sistema.</p>
+<div class="row g-3">
+
+    <div class="col-md-3">
+
+        <div class="card shadow-sm h-100">
+
+            <div class="card-body">
+
+                <h6 class="text-muted">
+                    <i class="bi bi-people-fill"></i>
+                    Total de Clientes
+                </h6>
+
+                <h2 class="fw-bold">
+                    {{ total_clientes }}
+                </h2>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="col-md-3">
+
+        <div class="card shadow-sm h-100">
+
+            <div class="card-body">
+
+                <h6 class="text-muted">
+                    <i class="bi bi-cloud-upload"></i>
+                    Importações
+                </h6>
+
+                <h2 class="fw-bold">
+                    {{ total_importacoes }}
+                </h2>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="col-md-3">
+
+        <div class="card shadow-sm h-100">
+
+            <div class="card-body">
+
+                <h6 class="text-muted">
+                    <i class="bi bi-file-earmark-text"></i>
+                    Último Arquivo
+                </h6>
+
+                {% if ultima_importacao %}
+
+                    <strong>
+                        {{ ultima_importacao.arquivo }}
+                    </strong>
+
+                {% else %}
+
+                    <span class="text-muted">
+                        Nenhum arquivo
+                    </span>
+
+                {% endif %}
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="col-md-3">
+
+        <div class="card shadow-sm h-100">
+
+            <div class="card-body">
+
+                <h6 class="text-muted">
+                    <i class="bi bi-check-circle-fill text-success"></i>
+                    Status
+                </h6>
+
+                <span class="badge bg-success fs-6">
+                    Online
+                </span>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<div class="card mt-4 shadow-sm">
+
+    <div class="card-header">
+        <h5 class="mb-0">Últimas Importações</h5>
+    </div>
+
+    <div class="card-body">
+
+        <table class="table table-hover">
+
+            <thead>
+                <tr>
+                    <th>Arquivo</th>
+                    <th>Importados</th>
+                    <th>Data</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+                {% for importacao in ultimas_importacoes %}
+
+                <tr>
+                    <td>{{ importacao.arquivo }}</td>
+                    <td>{{ importacao.importados }}</td>
+                    <td>{{ importacao.data|date:"d/m/Y H:i" }}</td>
+                </tr>
+
+                {% empty %}
+
+                <tr>
+                    <td colspan="3">
+                        Nenhuma importação encontrada.
+                    </td>
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+
+<div class="card mt-4 shadow-sm">
+
+    <div class="card-header">
+        <h5 class="mb-0">Clientes por Importação</h5>
+    </div>
+
+    <div class="card-body">
+
+        <canvas id="graficoImportacoes"></canvas>
+
+    </div>
+
+</div>
 
 {% endblock %}
+
+{% block scripts %}
+
+<script>
+
+const ctx = document.getElementById('graficoImportacoes');
+
+new Chart(ctx,{
+    type:'bar',
+    data:{
+        labels: {{ grafico_labels|safe }},
+        datasets:[{
+            label:'Clientes importados',
+            data: {{ grafico_dados|safe }}
+        }]
+    }
+});
+
+</script>
+
+{% endblock %}
+
