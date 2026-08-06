@@ -22,7 +22,7 @@ Clientes
                     type="text"
                     name="nome"
                     class="form-control"
-                    placeholder="Pesquisar cliente..."
+                    placeholder="Digite o nome do cliente..."
                     value="{{ request.GET.nome }}">
 
                 <button class="btn btn-primary">
@@ -38,14 +38,16 @@ Clientes
 
     <div class="col-md-6 text-end">
 
-        <a href="/clientes/novo/" class="btn btn-success">
+        <a href="{% url 'novo_cliente' %}" class="btn btn-primary">
 
             <i class="bi bi-plus-circle"></i>
-
             Novo Cliente
 
         </a>
-
+        <a href="{% url 'exportar_excel' %}" class="btn btn-success">
+            <i class="bi bi-file-earmark-excel"></i>
+            Exportar Excel
+        </a>
     </div>
 
 </div>
@@ -59,9 +61,20 @@ Clientes
             <thead class="table-dark">
 
                 <tr>
-                    <th>Nome</th>
-                    <th>Email</th>
-                    <th>Idade</th>
+                    <th>
+                        <i class="bi bi-person-fill"></i>
+                        Nome
+                    </th>
+
+                    <th>
+                        <i class="bi bi-envelope-fill"></i>
+                            Email
+                    </th>
+
+                    <th>
+                        <i class="bi bi-calendar-event"></i>
+                            Idade
+                    </th>
                     <th class="text-center">Ações</th>
                 </tr>
 
@@ -75,19 +88,24 @@ Clientes
 
                     <td>{{ cliente.nome }}</td>
                     <td>{{ cliente.email }}</td>
-                    <td>{{ cliente.idade }}</td>
-
+                    <td>
+                        <span class="badge bg-primary">
+                            {{ cliente.idade }} anos
+                        </span>
+                    </td>
                     <td class="text-center">
 
                         <a href="{% url 'editar_cliente' cliente.id %}"
-                            class="btn btn-warning btn-sm">
+                            class="btn btn-warning btn-sm"
+                            title="Editar cliente">
 
                             <i class="bi bi-pencil"></i>
 
                         </a>
 
                         <a href="{% url 'excluir_cliente' cliente.id %}"
-                            class="btn btn-danger btn-sm">
+                            class="btn btn-danger btn-sm"
+                            title="Excluir cliente">
 
                             <i class="bi bi-trash"></i>
 

@@ -3,18 +3,17 @@ import csv
 from django.shortcuts import render, redirect
 from django.core.files.storage import FileSystemStorage
 from django.contrib import messages
-
 from .models import Arquivo, Cliente, Importacao
-
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from .serializers import ClienteSerializer
 from .services.importacao_service import importar_csv
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import permission_classes
-
 from .models import Cliente, Importacao
 from django.core.paginator import Paginator
+from django.http import HttpResponse
+from openpyxl import Workbook
 
 def home(request):
 
@@ -41,6 +40,32 @@ def home(request):
 
     return render(request, "core/home.html", context)
 
+def exportar_excel(request):
+
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Clientes"
+
+    ws.append(["Nome", "Email", "Idade"])
+
+    clientes = Cliente.objects.all().order_by("nome")
+
+    for cliente in clientes:
+        ws.append([
+            cliente.nome,
+            cliente.email,
+            cliente.idade
+        ])
+
+    response = HttpResponse(
+        content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    )
+
+    response["Content-Disposition"] = 'attachment; filename="clientes.xlsx"'
+
+    wb.save(response)
+
+    return response
 
 def upload(request):
 
@@ -73,8 +98,15 @@ def upload(request):
 
         return redirect("upload")
 
-    return render(request, "core/upload.html")
+    ultimas_importacoes = Importacao.objects.order_by("-data")[:5]
 
+    return render(
+        request,
+        "core/upload.html",
+        {
+            "ultimas_importacoes": ultimas_importacoes
+        }
+    )
 @api_view(["GET", "POST"])
 @permission_classes([IsAuthenticated])
 def lista_clientes(request):
@@ -193,7 +225,7 @@ def excluir_cliente(request, id):
     cliente = Cliente.objects.get(id=id)
 
     if request.method == "POST":
-
+ 
         cliente.delete()
 
         messages.success(request, "Cliente excluído com sucesso!")

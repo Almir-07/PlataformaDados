@@ -10,100 +10,54 @@ Dashboard
     Dashboard
 </h2>
 
-<div class="row g-3">
+<div class="row g-3 mb-4">
 
     <div class="col-md-3">
-
-        <div class="card shadow-sm h-100">
-
+        <div class="card border-0 shadow bg-primary text-white">
             <div class="card-body">
-
-                <h6 class="text-muted">
-                    <i class="bi bi-people-fill"></i>
-                    Total de Clientes
-                </h6>
-
-                <h2 class="fw-bold">
-                    {{ total_clientes }}
-                </h2>
-
+                <h6>Total de Clientes</h6>
+                <h2>{{ total_clientes }}</h2>
+                <small><i class="bi bi-people-fill"></i> Clientes cadastrados</small>
             </div>
-
         </div>
-
     </div>
 
     <div class="col-md-3">
-
-        <div class="card shadow-sm h-100">
-
+        <div class="card border-0 shadow bg-success text-white">
             <div class="card-body">
-
-                <h6 class="text-muted">
-                    <i class="bi bi-cloud-upload"></i>
-                    Importações
-                </h6>
-
-                <h2 class="fw-bold">
-                    {{ total_importacoes }}
-                </h2>
-
+                <h6>Importações</h6>
+                <h2>{{ total_importacoes }}</h2>
+                <small><i class="bi bi-upload"></i> Arquivos processados</small>
             </div>
-
         </div>
-
     </div>
 
     <div class="col-md-3">
-
-        <div class="card shadow-sm h-100">
-
+        <div class="card border-0 shadow bg-warning text-dark">
             <div class="card-body">
-
-                <h6 class="text-muted">
-                    <i class="bi bi-file-earmark-text"></i>
-                    Último Arquivo
-                </h6>
+                <h6>Último Arquivo</h6>
 
                 {% if ultima_importacao %}
-
-                    <strong>
-                        {{ ultima_importacao.arquivo }}
-                    </strong>
-
+                    <strong>{{ ultima_importacao.arquivo }}</strong>
                 {% else %}
-
-                    <span class="text-muted">
-                        Nenhum arquivo
-                    </span>
-
+                    <span>Nenhum arquivo</span>
                 {% endif %}
 
             </div>
-
         </div>
-
     </div>
 
     <div class="col-md-3">
-
-        <div class="card shadow-sm h-100">
-
+        <div class="card border-0 shadow bg-dark text-white">
             <div class="card-body">
+                <h6>Status</h6>
 
-                <h6 class="text-muted">
-                    <i class="bi bi-check-circle-fill text-success"></i>
-                    Status
-                </h6>
-
-                <span class="badge bg-success fs-6">
+                <span class="badge bg-success">
                     Online
                 </span>
 
             </div>
-
         </div>
-
     </div>
 
 </div>
@@ -177,18 +131,37 @@ Dashboard
 
 const ctx = document.getElementById('graficoImportacoes');
 
-new Chart(ctx,{
-    type:'bar',
-    data:{
+new Chart(ctx, {
+    type: 'bar',
+    data: {
         labels: {{ grafico_labels|safe }},
-        datasets:[{
-            label:'Clientes importados',
-            data: {{ grafico_dados|safe }}
+        datasets: [{
+            label: 'Clientes Importados',
+            data: {{ grafico_dados|safe }},
+            backgroundColor: '#0d6efd',
+            borderColor: '#084298',
+            borderWidth: 1,
+            borderRadius: 8
         }]
+    },
+    options: {
+        responsive: true,
+        plugins: {
+            legend: {
+                display: true
+            }
+        },
+        scales: {
+            y: {
+                beginAtZero: true,
+                ticks: {
+                    precision: 0
+                }
+            }
+        }
     }
+
 });
-
 </script>
-
 {% endblock %}
 

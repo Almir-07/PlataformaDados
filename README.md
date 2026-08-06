@@ -1,39 +1,42 @@
-Plataforma de Importação de Clientes
+# Plataforma de Importação de Clientes
 
-Sobre o projeto
+# Sobre o projeto
 
-Sistema desenvolvido em Python utilizando o Django e Django REST Framework para importação de clientes através de arquivos CSV.
+Sistema desenvolvido em **Python + Django** para importação, gerenciamento e visualização de clientes através de arquivos CSV.
 
 O sistema realiza a validação dos dados antes da importação, evita registros duplicados utilizando o e-mail como identificador único, registra o histórico das importações e disponibiliza uma API REST completa para gerenciamento dos clientes.
 
 ---
 
-Tecnologias:
+# Tecnologias:
 
 - Python
 - Django
 - Django REST Framework
+- Bootstrap 5
+- Chart.js
 - SQLite
-- HTML
-- CSS
-- Postman
+- OpenPyXL
+- HTML5
+- CSS3
 
 ---
 
-Funcionalidades:
+# Funcionalidades:
 
-- Importação de arquivos CSV
-- Validação de dados
-- Evita clientes duplicados
-- Registro das importações
-- Painel administrativo do Django
-- API REST
-- CRUD completo
-- Serialização de dados em JSON
+- Dashboard com indicadores
+- Upload de arquivos CSV
+- Cadastro, edição e exclusão de clientes
+- Pesquisa por nome
+- Paginação de resultados
+- Exportação para Excel
+- API REST completa
+- Dashboard com gráficos (Chart.js)
+- Validação de dados e prevenção de duplicidade
 
 ---
 
-  Endpoints
+# Endpoints
 
   Clientes
 
@@ -59,7 +62,22 @@ Remove um cliente.
 
 ---
 
-## Como executar
+## Estrutura do Projeto
+
+PlataformaDados/
+│
+├── config/
+├── core/
+├── media/
+├── static/
+├── templates/
+├── manage.py
+├── requirements.txt
+└── README.md
+
+---
+
+# Como executar
 
 Clone o projeto:
 
@@ -101,4 +119,11 @@ python manage.py runserver
 
 ---
 
-Almir Filho
+# Desenvolvedor
+
+**Almir Filho**
+
+Projeto desenvolvido para estudos de Python, Django e Desenvolvimento Web.
+
+GitHub:
+https://github.com/Almir-07
